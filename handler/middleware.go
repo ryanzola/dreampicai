@@ -3,8 +3,10 @@ package handler
 import (
 	"context"
 	"net/http"
+	"os"
 	"strings"
 
+	"github.com/gorilla/sessions"
 	"github.com/ryanzola/dreampicai/pkg/sb"
 	"github.com/ryanzola/dreampicai/types"
 )
@@ -34,13 +36,19 @@ func WithUser(next http.Handler) http.Handler {
 			return
 		}
 
-		cookie, err := r.Cookie("at")
+		store := sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+		session, err := store.Get(r, sessionUserKey)
 		if err != nil {
 			next.ServeHTTP(w, r)
 			return
 		}
 
-		resp, err := sb.Client.Auth.User(r.Context(), cookie.Value)
+		accessToken := session.Values[sessionAccessTokenKey]
+		if accessToken == nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+		resp, err := sb.Client.Auth.User(r.Context(), accessToken.(string))
 		if err != nil {
 			next.ServeHTTP(w, r)
 			return

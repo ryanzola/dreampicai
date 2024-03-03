@@ -28,6 +28,7 @@ func main() {
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
 
 	router.Get("/login", handler.Make(handler.HandleLoginIndex))
+	router.Get("/login/provider/google", handler.Make(handler.HandleLoginWithGoogle))
 	router.Post("/login", handler.Make(handler.HandleLoginCreate))
 
 	router.Post("/logout", handler.Make(handler.HandleLogoutCreate))

@@ -3,3 +3,4 @@ bin
 *_templ.go*
 tmp
 .git
+go.sum
