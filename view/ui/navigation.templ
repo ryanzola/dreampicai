@@ -1,0 +1,41 @@
+package ui
+
+import (
+  "github.com/ryanzola/dreampicai/view"
+)
+
+templ Navigation() {
+  <div class="navbar bg-base-100 border-b border-gray-700">
+    <div class="flex-1">
+      <a class="text-2xl font-black text-primary">dreampicai</a>
+    </div>
+    <div class="flex-none">
+      <ul class="menu menu-horizontal px-1">
+        if view.AuthenticatedUser(ctx).LoggedIn {
+        <li><a>Link</a></li>
+        <li>
+          <details>
+            <summary>
+              { view.AuthenticatedUser(ctx).Email }
+            </summary>
+            <ul class="p-2 bg-base-100 rounded-t-none">
+              <li><a href="/settings">Settings</a></li>
+              @LogoutForm()
+            </ul>
+          </details>
+        </li>
+        } else {
+        <li><a href="/login" class="btn btn-primary">Login</a></li>
+        }
+      </ul>
+    </div>
+  </div>
+}
+
+templ LogoutForm() {
+  <li>
+    <form method="post" action="/logout">
+      <button class="btn btn-primary">Log out</button>
+    </form>
+  </li>
+}
