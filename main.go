@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
+	"github.com/ryanzola/dreampicai/db"
 	"github.com/ryanzola/dreampicai/handler"
 	"github.com/ryanzola/dreampicai/pkg/sb"
 )
@@ -35,12 +36,30 @@ func main() {
 
 	router.Get("/signup", handler.Make(handler.HandleSignupIndex))
 	router.Post("/signup", handler.Make(handler.HandleSignupCreate))
+
 	router.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
 
 	router.Group(func(auth chi.Router) {
 		auth.Use(handler.WithAuth)
-		auth.Get("/settings", handler.Make(handler.HandleSettingsIndex))
 
+		auth.Get("/account/setup", handler.Make(handler.HandleAccountSetupIndex))
+		auth.Post("/account/setup", handler.Make(handler.HandleAccountSetupCreate))
+	})
+
+	router.Group(func(auth chi.Router) {
+		auth.Use(handler.WithAuth, handler.WithAccountSetup)
+
+		auth.Get("/settings", handler.Make(handler.HandleSettingsIndex))
+		auth.Put("/settings/account/profile", handler.Make(handler.HandleSettingsUsernameUpdate))
+
+		auth.Post("/auth/reset-password", handler.Make(handler.HandleResetPasswordCreate))
+		auth.Put("/auth/reset-password", handler.Make(handler.HandleResetPasswordUpdate))
+		auth.Get("/auth/reset-password", handler.Make(handler.HandleResetPasswordIndex))
+
+		auth.Get("/generate", handler.Make(handler.HandleGenerateIndex))
+		auth.Post("/generate", handler.Make(handler.HandleGenerateCreate))
+
+		auth.Get("/generate/image/status/{id}", handler.Make(handler.HandleGenerateImageStatus))
 	})
 
 	port := os.Getenv("HTTP_LISTEN_ADDR")
@@ -50,6 +69,10 @@ func main() {
 
 func initEverything() error {
 	if err := godotenv.Load(); err != nil {
+		return err
+	}
+
+	if err := db.Init(); err != nil {
 		return err
 	}
 

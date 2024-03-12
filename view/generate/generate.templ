@@ -1,0 +1,63 @@
+package generate
+
+import (
+  "fmt"
+
+  "github.com/ryanzola/dreampicai/view/layout"
+  "github.com/ryanzola/dreampicai/types"
+)
+
+type ViewData struct {
+  Images []types.Image
+}
+
+templ Index(data ViewData) {
+  @layout.App(true) {
+    <div class="w-full h-[calc(100vh-69px)] flex">
+      <div class="w-[400px] border-r border-gray-700 p-4">
+        @Form()
+      </div>
+      <div class="flex-1 bg-base-300">
+        @Gallery(data.Images)
+      </div>
+    </div>
+  }
+}
+
+templ Form() {
+  <form 
+    hx-post="/generate"
+    hx-swap="beforeend"
+    hx-target="#gallery"
+  >
+    <div class="">
+      <button class="w-full btn btn-primary">Generate</button>
+    </div>
+  </form>
+}
+
+templ Gallery(images []types.Image) {
+  <div class="grid grid-cols-2 md:grid-cols-4 p-4 gap-4" id="gallery">
+    for _, image := range images {
+      @GalleryImage(image)
+    }
+  </div>
+}
+
+templ GalleryImage(image types.Image) {
+  if image.Status == types.ImageStatusCompleted {
+    <div class="bg-green-100 aspect-[3/4] rounded-xl"></div>
+  } else if image.Status == types.ImageStatusFailed {
+    <div class="bg-red-100 aspect-[3/4] rounded-xl grid place-items-center text-red-300 text-5xl">
+      <i class="fa-solid fa-bug"></i>
+    </div>
+  } else if image.Status == types.ImageStatusPending {
+    <div 
+      hx-get={ fmt.Sprintf("/generate/image/status/%d", image.ID) }
+      hx-trigger="load delay:3s"
+      class="bg-yellow-100 aspect-[3/4] rounded-xl grid place-items-center"
+    >
+      <span class="loading loading-spinner loading-lg"></span>
+    </div>
+  }
+}

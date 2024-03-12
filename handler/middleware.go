@@ -2,11 +2,15 @@ package handler
 
 import (
 	"context"
+	"database/sql"
+	"errors"
 	"net/http"
 	"os"
 	"strings"
 
+	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
+	"github.com/ryanzola/dreampicai/db"
 	"github.com/ryanzola/dreampicai/pkg/sb"
 	"github.com/ryanzola/dreampicai/types"
 )
@@ -20,10 +24,33 @@ func WithAuth(next http.Handler) http.Handler {
 
 		user := getAuthenticatedUser(r)
 		if !user.LoggedIn {
-			http.Redirect(w, r, "/login", http.StatusSeeOther)
+			path := r.URL.Path
+			http.Redirect(w, r, "/login?to="+path, http.StatusSeeOther)
 			return
 		}
 		next.ServeHTTP(w, r)
+	}
+
+	return http.HandlerFunc(fn)
+}
+
+func WithAccountSetup(next http.Handler) http.Handler {
+	fn := func(w http.ResponseWriter, r *http.Request) {
+		user := getAuthenticatedUser(r)
+		account, err := db.GetAccountByUserID(user.ID)
+		// the user has not set up their account
+		// redirect to /account/setup
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Redirect(w, r, "/account/setup", http.StatusSeeOther)
+			return
+		} else if err != nil {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		user.Account = account
+		ctx := context.WithValue(r.Context(), types.UserContextKey, user)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 
 	return http.HandlerFunc(fn)
@@ -55,8 +82,10 @@ func WithUser(next http.Handler) http.Handler {
 		}
 
 		user := types.AuthenticatedUser{
-			Email:    resp.Email,
-			LoggedIn: true,
+			ID:          uuid.MustParse(resp.ID),
+			Email:       resp.Email,
+			LoggedIn:    true,
+			AccessToken: accessToken.(string),
 		}
 
 		ctx := context.WithValue(r.Context(), types.UserContextKey, user)

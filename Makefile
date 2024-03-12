@@ -18,8 +18,8 @@ build:
 up: ## Database migration up
 	@go run cmd/migrate/main.go up
 
-drop:
-	@go run cmd/drop/main.go up
+reset:
+	@go run cmd/reset/main.go up
 
 down:	## Database migration down
 	@go run cmd/migrate/main.go down

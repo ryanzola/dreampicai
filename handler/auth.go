@@ -1,15 +1,21 @@
 package handler
 
 import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 	"os"
 
 	"github.com/gorilla/sessions"
 	"github.com/nedpals/supabase-go"
+	"github.com/ryanzola/dreampicai/db"
 	"github.com/ryanzola/dreampicai/pkg/kit/validate"
 	"github.com/ryanzola/dreampicai/pkg/sb"
 	"github.com/ryanzola/dreampicai/pkg/util"
+	"github.com/ryanzola/dreampicai/types"
 	"github.com/ryanzola/dreampicai/view/auth"
 )
 
@@ -17,6 +23,94 @@ const (
 	sessionUserKey        = "user"
 	sessionAccessTokenKey = "accessToken"
 )
+
+func HandleResetPasswordIndex(w http.ResponseWriter, r *http.Request) error {
+	return render(r, w, auth.ResetPassword())
+}
+
+func HandleResetPasswordCreate(w http.ResponseWriter, r *http.Request) error {
+	user := getAuthenticatedUser(r)
+
+	params := map[string]any{
+		"email":      user.Email,
+		"redirectTo": "http://localhost:3000/auth/reset-password",
+	}
+	b, err := json.Marshal(params)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest("POST", sb.BaseAuthURL, bytes.NewReader(b))
+	if err != nil {
+		return err
+	}
+
+	req.Header.Set("apikey", os.Getenv("SUPABASE_SECRET"))
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		b, err := io.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+
+		return fmt.Errorf("supabase password recovery responded with a non 200 status code: %d => %s", resp.StatusCode, string(b))
+	}
+
+	return render(r, w, auth.ResetPasswordInitiated(user.Email))
+}
+
+func HandleResetPasswordUpdate(w http.ResponseWriter, r *http.Request) error {
+	user := getAuthenticatedUser(r)
+	params := map[string]any{
+		"password": r.FormValue("password"),
+	}
+	resp, err := sb.Client.Auth.UpdateUser(r.Context(), user.AccessToken, params)
+	errors := auth.ResetPasswordErrors{
+		NewPassword: "Please enter a valid password",
+	}
+	if err != nil {
+		return render(r, w, auth.ResetPasswordForm(errors))
+	}
+	fmt.Printf("%+v\n", resp)
+
+	return hxRedirect(w, r, "/")
+}
+
+func HandleAccountSetupIndex(w http.ResponseWriter, r *http.Request) error {
+	return render(r, w, auth.AccountSetup())
+}
+
+func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
+	params := auth.AccountSetupParams{
+		Username: r.FormValue("username"),
+	}
+
+	fmt.Println(params)
+
+	var errors auth.AccountSetupErrors
+	ok := validate.New(&params, validate.Fields{
+		"Username": validate.Rules(validate.Min(2), validate.Max(50)),
+	}).Validate(&errors)
+	if !ok {
+		return render(r, w, auth.AccountSetupForm(params, errors))
+	}
+
+	user := getAuthenticatedUser(r)
+	account := types.Account{
+		UserID:   user.ID,
+		Username: params.Username,
+	}
+	if err := db.CreateAccount(&account); err != nil {
+		return err
+	}
+
+	return hxRedirect(w, r, "/")
+}
 
 func HandleLoginIndex(w http.ResponseWriter, r *http.Request) error {
 	return render(r, w, auth.Login())
