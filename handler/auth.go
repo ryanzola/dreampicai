@@ -90,8 +90,6 @@ func HandleAccountSetupCreate(w http.ResponseWriter, r *http.Request) error {
 		Username: r.FormValue("username"),
 	}
 
-	fmt.Println(params)
-
 	var errors auth.AccountSetupErrors
 	ok := validate.New(&params, validate.Fields{
 		"Username": validate.Rules(validate.Min(2), validate.Max(50)),

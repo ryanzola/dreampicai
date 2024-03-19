@@ -7,6 +7,36 @@ import (
 	"github.com/ryanzola/dreampicai/types"
 )
 
+func CreateImage(image *types.Image) error {
+	_, err := Bun.NewInsert().
+		Model(image).
+		Exec(context.Background())
+
+	return err
+}
+
+func GetImagesByUserID(userID uuid.UUID) ([]types.Image, error) {
+	var images []types.Image
+	err := Bun.NewSelect().
+		Model(&images).
+		Where("deleted = ?", false).
+		Where("user_id = ?", userID).
+		Order("created_at DESC").
+		Scan(context.Background())
+
+	return images, err
+}
+
+func GetImageByID(id int) (types.Image, error) {
+	var image types.Image
+	err := Bun.NewSelect().
+		Model(&image).
+		Where("id = ?", id).
+		Scan(context.Background())
+
+	return image, err
+}
+
 func UpdateAccount(account *types.Account) error {
 	_, err := Bun.NewUpdate().
 		Model(account).

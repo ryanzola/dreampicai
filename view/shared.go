@@ -3,6 +3,7 @@ package view
 import (
 	"context"
 	"log/slog"
+	"strconv"
 
 	"github.com/ryanzola/dreampicai/types"
 )
@@ -15,4 +16,8 @@ func AuthenticatedUser(ctx context.Context) types.AuthenticatedUser {
 	}
 
 	return user
+}
+
+func String(i int) string {
+	return strconv.Itoa(i)
 }
