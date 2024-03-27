@@ -1,0 +1,8 @@
+<div class=\"max-w-2xl w-full mx-auto mt-8 space-y-8\"><h1 class=\"text-lg font-semibold border-b border-gray-700 pb-2\">Profile</h1>
+</div><div class=\"max-w-2xl w-full mx-auto mt-4 space-y-8\"><h1 class=\"text-lg font-semibold border-b border-gray-700 pb-2\">Reset Password</h1><form hx-post=\"/auth/reset-password\" hx-swap=\"outerHTML\" class=\"sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0\"><dt>Reset Password</dt><dd class=\"sm:col-span-2 sm:mt-0\"><button class=\"btn btn-primary\">Reset Password</button></dd></form></div>
+<form hx-put=\"/settings/account/profile\" hx-swap=\"outerHTML\" class=\"sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0\"><dt>Username</dt><dd class=\"sm:col-span-2 sm:mt-0\"><input class=\"input input-bordered w-full max-w-md\" value=\"
+\" name=\"username\"> 
+<p class=\"text-red-500 text-sm mt-1\">
+</p>
+</dd><dt></dt><dd class=\"sm:col-span-2 sm:mt-0\"><button class=\"btn btn-primary\">Save</button></dd>
+</form>
