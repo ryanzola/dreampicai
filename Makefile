@@ -17,9 +17,8 @@ templ:
 	@templ generate --watch --proxy=http://localhost:3000
 
 build:
-	tailwindcss -i view/css/app.css -o public/styles.css
 	@templ generate view
-	@go build -o bin/dreampicai main.go
+	@go build -tags dev -o bin/dreampicai main.go
 
 up: ## Database migration up
 	@go run cmd/migrate/main.go up

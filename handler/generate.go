@@ -3,12 +3,16 @@ package handler
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
+	"github.com/replicate/replicate-go"
 	"github.com/ryanzola/dreampicai/db"
 	"github.com/ryanzola/dreampicai/pkg/kit/validate"
 	"github.com/ryanzola/dreampicai/types"
@@ -52,10 +56,22 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 		return render(r, w, generate.Form(params, errors))
 	}
 
+	batchID := uuid.New()
+	genParams := GenerateImageParams{
+		Prompt:  params.Prompt,
+		Amount:  params.Amount,
+		UserID:  user.ID,
+		BatchID: batchID,
+	}
+
+	if err := generateImages(r.Context(), genParams); err != nil {
+		log.Println("Error generating image", err)
+		return err
+	}
+
 	// if there is an error, rollback the transaction
 	// if there is no error, commit the transaction, create the image and return the response
 	err := db.Bun.RunInTx(r.Context(), &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
-		batchID := uuid.New()
 		for i := 0; i < params.Amount; i++ {
 			img := types.Image{
 				Prompt:  params.Prompt,
@@ -91,4 +107,42 @@ func HandleGenerateImageStatus(w http.ResponseWriter, r *http.Request) error {
 	slog.Info("Checking image status", "id", id)
 
 	return render(r, w, generate.GalleryImage(image))
+}
+
+type GenerateImageParams struct {
+	Prompt  string
+	Amount  int
+	UserID  uuid.UUID
+	BatchID uuid.UUID
+}
+
+func generateImages(ctx context.Context, params GenerateImageParams) error {
+	// You can also provide a token directly with
+	// `replicate.NewClient(replicate.WithToken("r8_..."))`
+	r8, err := replicate.NewClient(replicate.WithTokenFromEnv())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// stability-ai/stable-diffusion:ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4
+	// owner := "stability-ai/stable-diffusion"
+	version := "ac732df83cea7fff18b8472768c88ad041fa750ff7682a21affe81863cbe77e4"
+
+	input := replicate.PredictionInput{
+		"prompt":      params.Prompt,
+		"num_outputs": params.Amount,
+	}
+
+	baseURL := os.Getenv("REPLICATE_CALLBACK_URL")
+	URL := fmt.Sprintf("%s/%s/%s", baseURL, params.UserID, params.BatchID)
+
+	webhook := replicate.Webhook{
+		URL:    URL,
+		Events: []replicate.WebhookEventType{"start", "completed"},
+	}
+
+	// Run a model and wait for its output
+	_, err = r8.CreatePrediction(ctx, version, input, &webhook, false)
+
+	return err
 }

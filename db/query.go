@@ -15,6 +15,18 @@ func CreateImage(image *types.Image) error {
 	return err
 }
 
+func GetImagesByBatchID(batchID uuid.UUID) ([]types.Image, error) {
+	var images []types.Image
+	err := Bun.NewSelect().
+		Model(&images).
+		Where("deleted = ?", false).
+		Where("batch_id = ?", batchID).
+		Order("created_at DESC").
+		Scan(context.Background())
+
+	return images, err
+}
+
 func GetImagesByUserID(userID uuid.UUID) ([]types.Image, error) {
 	var images []types.Image
 	err := Bun.NewSelect().

@@ -1,7 +1,0 @@
-<div class=\"navbar bg-base-100 border-b border-gray-700\"><div class=\"flex-1\"><a href=\"/\" class=\"text-2xl font-black text-primary\">dreampicai</a></div><div class=\"flex-none\"><ul class=\"menu menu-horizontal px-1\">
-<li><a href=\"/generate\"><i class=\"fa-solid fa-wand-magic-sparkles\"></i> Generate</a></li><li><details><summary>
-</summary><ul class=\"p-2 bg-base-100 rounded-t-none\"><li><a href=\"/settings\">Settings</a></li>
-</ul></details></li>
-<li><a href=\"/login\" class=\"btn btn-primary\">Login</a></li>
-</ul></div></div>
-<li><form method=\"post\" action=\"/logout\"><button>Log out</button></form></li>
