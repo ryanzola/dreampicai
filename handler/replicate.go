@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,11 +11,18 @@ import (
 	"github.com/google/uuid"
 	"github.com/ryanzola/dreampicai/db"
 	"github.com/ryanzola/dreampicai/types"
+	"github.com/uptrace/bun"
 )
 
-const succeeded = "success"
+const (
+	succeeded  = "succeeded"
+	processing = "processing"
+)
 
 type ReplicateResp struct {
+	Input struct {
+		Prompt string `json:"prompt"`
+	} `json:"input"`
 	Status string   `json:"status"`
 	Output []string `json:"output"`
 }
@@ -24,11 +33,14 @@ func HandleReplicateCallback(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
+	if resp.Status == processing {
+		return nil
+	}
+
 	if resp.Status != succeeded {
 		return fmt.Errorf("replicate callback responded with a non-ok status: %s", resp.Output)
 	}
 
-	fmt.Println(resp)
 	batchID, err := uuid.Parse(chi.URLParam(r, "batchID"))
 	if err != nil {
 		return fmt.Errorf("replicate callback invalid batchID: %s", err)
@@ -43,10 +55,18 @@ func HandleReplicateCallback(w http.ResponseWriter, r *http.Request) error {
 		return fmt.Errorf("replicate callback unequal images compared to replicate output")
 	}
 
-	for i, imageURL := range resp.Output {
-		images[i].Status = types.ImageStatusCompleted
-		images[i].ImageLocation = imageURL
-	}
+	err = db.Bun.RunInTx(r.Context(), &sql.TxOptions{}, func(ctx context.Context, tx bun.Tx) error {
+		for i, imageURL := range resp.Output {
+			images[i].Status = types.ImageStatusCompleted
+			images[i].ImageLocation = imageURL
+			images[i].Prompt = resp.Input.Prompt
+			if err := db.UpdateImage(tx, &images[i]); err != nil {
+				return err
+			}
+		}
 
-	return nil
+		return nil
+	})
+
+	return err
 }

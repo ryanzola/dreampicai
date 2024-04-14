@@ -5,11 +5,21 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/ryanzola/dreampicai/types"
+	"github.com/uptrace/bun"
 )
 
-func CreateImage(image *types.Image) error {
-	_, err := Bun.NewInsert().
+func CreateImage(tx bun.Tx, image *types.Image) error {
+	_, err := tx.NewInsert().
 		Model(image).
+		Exec(context.Background())
+
+	return err
+}
+
+func UpdateImage(tx bun.Tx, image *types.Image) error {
+	_, err := tx.NewUpdate().
+		Model(image).
+		WherePK().
 		Exec(context.Background())
 
 	return err

@@ -1,19 +1,19 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/ryanzola/dreampicai/view/home"
 )
 
-func HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
-	user := getAuthenticatedUser(r)
-	// account, err := db.GetAccountByUserID(user.ID)
-	// if err != nil {
-	// 	return err
-	// }
+func HandleLongProcess(w http.ResponseWriter, r *http.Request) error {
+	// This is a long process
+	time.Sleep(5 * time.Second)
 
-	fmt.Printf("%+v\n", user.Account)
+	return home.UserLikes(1000).Render(r.Context(), w)
+}
+
+func HandleHomeIndex(w http.ResponseWriter, r *http.Request) error {
 	return home.Index().Render(r.Context(), w)
 }

@@ -8,7 +8,6 @@ require (
 )
 
 require (
-	github.com/docker/distribution v2.8.2+incompatible
 	github.com/joho/godotenv v1.5.1
 	github.com/nedpals/supabase-go v0.4.0
 	github.com/replicate/replicate-go v0.18.1
@@ -21,6 +20,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
+	github.com/stripe/stripe-go/v76 v76.23.0 // indirect
 	github.com/tmthrgd/go-hex v0.0.0-20190904060850-447a3041c3bc // indirect
 	github.com/vmihailenco/msgpack/v5 v5.4.1 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect

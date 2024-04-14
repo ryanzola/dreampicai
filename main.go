@@ -27,15 +27,13 @@ func main() {
 
 	router.Handle("/*", public())
 	router.Get("/", handler.Make(handler.HandleHomeIndex))
+	router.Get("/long-process", handler.Make(handler.HandleLongProcess))
 
 	router.Get("/login", handler.Make(handler.HandleLoginIndex))
 	router.Get("/login/provider/google", handler.Make(handler.HandleLoginWithGoogle))
 	router.Post("/login", handler.Make(handler.HandleLoginCreate))
 
 	router.Post("/logout", handler.Make(handler.HandleLogoutCreate))
-
-	router.Get("/signup", handler.Make(handler.HandleSignupIndex))
-	router.Post("/signup", handler.Make(handler.HandleSignupCreate))
 
 	router.Get("/auth/callback", handler.Make(handler.HandleAuthCallback))
 
@@ -54,14 +52,14 @@ func main() {
 		auth.Get("/settings", handler.Make(handler.HandleSettingsIndex))
 		auth.Put("/settings/account/profile", handler.Make(handler.HandleSettingsUsernameUpdate))
 
-		auth.Post("/auth/reset-password", handler.Make(handler.HandleResetPasswordCreate))
-		auth.Put("/auth/reset-password", handler.Make(handler.HandleResetPasswordUpdate))
-		auth.Get("/auth/reset-password", handler.Make(handler.HandleResetPasswordIndex))
-
 		auth.Get("/generate", handler.Make(handler.HandleGenerateIndex))
 		auth.Post("/generate", handler.Make(handler.HandleGenerateCreate))
-
 		auth.Get("/generate/image/status/{id}", handler.Make(handler.HandleGenerateImageStatus))
+		auth.Get("/checkout/create/{priceID}", handler.Make(handler.HandleStripeCheckoutCreate))
+		auth.Get("/checkout/success/{sessionID}", handler.Make(handler.HandleStripeCheckoutSuccess))
+		auth.Get("/checkout/cancel/{priceID}", handler.Make(handler.HandleStripeCheckoutCancel))
+
+		auth.Get("/buy-credits", handler.Make(handler.HandleCreditsIndex))
 	})
 
 	port := os.Getenv("HTTP_LISTEN_ADDR")

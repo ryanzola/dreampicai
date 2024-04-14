@@ -20,6 +20,8 @@ import (
 	"github.com/uptrace/bun"
 )
 
+const creditsPerImage = 2
+
 func HandleGenerateIndex(w http.ResponseWriter, r *http.Request) error {
 	user := getAuthenticatedUser(r)
 	images, err := db.GetImagesByUserID(user.ID)
@@ -50,10 +52,25 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	ok := validate.New(params, validate.Fields{
-		"Prompt": validate.Rules(validate.Min(10), validate.Max(100)),
+		"Prompt": validate.Rules(validate.Min(10), validate.Max(500)),
 	}).Validate(&errors)
 	if !ok || len(errors.Amount) > 0 {
 		return render(r, w, generate.Form(params, errors))
+	}
+
+	// check if user has enough credits
+	creditsNeeded := params.Amount * creditsPerImage
+	if user.Account.Credits < creditsNeeded {
+		errors.CreditsNeeded = creditsNeeded
+		errors.UserCredits = user.Account.Credits
+		errors.Credits = true
+
+		return render(r, w, generate.Form(params, errors))
+	}
+
+	user.Account.Credits -= creditsNeeded
+	if err := db.UpdateAccount(&user.Account); err != nil {
+		return err
 	}
 
 	batchID := uuid.New()
@@ -79,7 +96,7 @@ func HandleGenerateCreate(w http.ResponseWriter, r *http.Request) error {
 				Status:  types.ImageStatusPending,
 				BatchID: batchID,
 			}
-			if err := db.CreateImage(&img); err != nil {
+			if err := db.CreateImage(tx, &img); err != nil {
 				return err
 			}
 		}
@@ -138,7 +155,7 @@ func generateImages(ctx context.Context, params GenerateImageParams) error {
 
 	webhook := replicate.Webhook{
 		URL:    URL,
-		Events: []replicate.WebhookEventType{"start", "completed"},
+		Events: []replicate.WebhookEventType{"completed"},
 	}
 
 	// Run a model and wait for its output
