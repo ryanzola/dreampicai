@@ -56,11 +56,11 @@ func HandleStripeCheckoutSuccess(w http.ResponseWriter, r *http.Request) error {
 	priceID := item.Price.ID
 
 	switch priceID {
-	case os.Getenv("100_CREDITS_PRICE_ID"):
+	case os.Getenv("CREDITS_100_PRICE_ID"):
 		user.Account.Credits += 100
-	case os.Getenv("250_CREDITS_PRICE_ID"):
+	case os.Getenv("CREDITS_250_PRICE_ID"):
 		user.Account.Credits += 250
-	case os.Getenv("600_CREDITS_PRICE_ID"):
+	case os.Getenv("CREDITS_600_PRICE_ID"):
 		user.Account.Credits += 600
 	default:
 		return fmt.Errorf("invalid price ID: %s", priceID)
