@@ -1,7 +1,7 @@
 FROM golang:1.22-alpine as builder
 
 WORKDIR /app
-RUN apk add --no-cache make nodejs npm
+RUN apk add --no-cache make nodejs npm git
 
 COPY . ./
 RUN make install
