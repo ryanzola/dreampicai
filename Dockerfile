@@ -3,7 +3,7 @@ FROM golang:1.22-alpine as builder
 WORKDIR /app
 RUN apk add --no-cache make nodejs npm git
 
-COPY go.mod go.sum Makefile ./
+COPY . ./
 RUN make install
 COPY . /app
 RUN make build
