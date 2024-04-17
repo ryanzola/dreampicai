@@ -8,6 +8,8 @@ RUN go mod tidy
 RUN go mod download
 COPY . /app
 
+RUN ls -lR /app/vendor
+
 RUN make build
 RUN ls -la /app 
 
