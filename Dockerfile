@@ -7,12 +7,10 @@ COPY go.mod go.sum Makefile ./
 RUN make install
 COPY . /app
 RUN make build
-RUN > /app/.env
 
 FROM gcr.io/distroless/static-debian11 AS release-stage
 WORKDIR /
 COPY --from=builder /dreampicai /dreampicai
-COPY --from=builder /app/.env .env
 
 
 EXPOSE 3000
