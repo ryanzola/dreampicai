@@ -3,12 +3,15 @@ FROM golang:1.22-alpine as builder
 WORKDIR /app
 RUN apk add --no-cache make nodejs npm git
 
-COPY go.mod go.sum Makefile ./
-RUN make install
+COPY go.mod go.sum ./
+RUN go mod tidy
+RUN go mod download
 COPY . /app
+
+RUN ls -lR /app/vendor
+
 RUN make build
-RUN ls -l /
-RUN ls -l /app 
+RUN ls -la /app 
 
 FROM gcr.io/distroless/static-debian11 AS release-stage
 WORKDIR /
