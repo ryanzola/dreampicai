@@ -7,11 +7,12 @@ COPY go.mod go.sum Makefile ./
 RUN make install
 COPY . /app
 RUN make build
-RUN ls /app 
+RUN ls -l /
+RUN ls -l /app 
 
 FROM gcr.io/distroless/static-debian11 AS release-stage
 WORKDIR /
-COPY --from=builder /app/dreampicai /dreampicai
+COPY --from=builder /dreampicai /dreampicai
 
 EXPOSE 3000
 USER nonroot:nonroot
