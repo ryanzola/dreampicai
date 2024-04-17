@@ -10,7 +10,7 @@ RUN make build
 
 FROM gcr.io/distroless/static-debian11 AS release-stage
 WORKDIR /
-COPY --from=builder bin/dreampicai /dreampicai
+COPY --from=builder /dreampicai /dreampicai
 
 
 EXPOSE 3000
