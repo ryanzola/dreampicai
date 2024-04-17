@@ -11,7 +11,7 @@ RUN > /app/.env
 
 FROM gcr.io/distroless/static-debian11 AS release-stage
 WORKDIR /
-COPY --from=builder /dreampicai /dreampicai
+COPY --from=builder /app/dreampicai /dreampicai
 COPY --from=builder /app/.env .env
 
 
