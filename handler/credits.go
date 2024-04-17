@@ -20,8 +20,10 @@ func HandleCreditsIndex(w http.ResponseWriter, r *http.Request) error {
 func HandleStripeCheckoutCreate(w http.ResponseWriter, r *http.Request) error {
 	stripe.Key = os.Getenv("STRIPE_API_KEY")
 	checkoutParams := &stripe.CheckoutSessionParams{
-		SuccessURL: stripe.String("http://localhost:7331/checkout/success/{CHECKOUT_SESSION_ID}"),
-		CancelURL:  stripe.String("http://localhost:7331/checkout/cancel"),
+		// SuccessURL: stripe.String("http://localhost:7331/checkout/success/{CHECKOUT_SESSION_ID}"),
+		SuccessURL: stripe.String("https://octopus-app-gmkne.ondigitalocean.app/checkout/success/{CHECKOUT_SESSION_ID}"),
+		// CancelURL:  stripe.String("http://localhost:7331/checkout/cancel"),
+		CancelURL: stripe.String("https://octopus-app-gmkne.ondigitalocean.app/checkout/cancel"),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
 			{
 				Price:    stripe.String(chi.URLParam(r, "priceID")),

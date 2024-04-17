@@ -56,8 +56,9 @@ func HandleLoginIndex(w http.ResponseWriter, r *http.Request) error {
 
 func HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
 	resp, err := sb.Client.Auth.SignInWithProvider(supabase.ProviderSignInOptions{
-		Provider:   "google",
-		RedirectTo: "http://localhost:7331/auth/callback",
+		Provider: "google",
+		// RedirectTo: "http://localhost:7331/auth/callback",
+		RedirectTo: "https://octopus-app-gmkne.ondigitalocean.app/auth/callback",
 	})
 	if err != nil {
 		return err
