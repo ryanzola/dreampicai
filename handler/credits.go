@@ -5,9 +5,10 @@ import (
 	"net/http"
 	"os"
 
+	"dreampicai/db"
+	"dreampicai/view/credits"
+
 	"github.com/go-chi/chi/v5"
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/view/credits"
 	"github.com/stripe/stripe-go/v76"
 	"github.com/stripe/stripe-go/v76/checkout/session"
 )

@@ -3,9 +3,9 @@ package handler
 import (
 	"net/http"
 
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/pkg/kit/validate"
-	"github.com/ryanzola/dreampicai/view/settings"
+	"dreampicai/db"
+	"dreampicai/pkg/kit/validate"
+	"dreampicai/view/settings"
 )
 
 func HandleSettingsIndex(w http.ResponseWriter, r *http.Request) error {

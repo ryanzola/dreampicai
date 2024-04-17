@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"strconv"
 
-	"github.com/ryanzola/dreampicai/types"
+	"dreampicai/types"
 )
 
 func AuthenticatedUser(ctx context.Context) types.AuthenticatedUser {

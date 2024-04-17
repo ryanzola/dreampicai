@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ryanzola/dreampicai/db"
+	"dreampicai/db"
 
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"

@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/ryanzola/dreampicai/db"
+	"dreampicai/db"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"

@@ -3,8 +3,9 @@ package db
 import (
 	"context"
 
+	"dreampicai/types"
+
 	"github.com/google/uuid"
-	"github.com/ryanzola/dreampicai/types"
 	"github.com/uptrace/bun"
 )
 

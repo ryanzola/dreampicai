@@ -10,13 +10,14 @@ import (
 	"os"
 	"strconv"
 
+	"dreampicai/db"
+	"dreampicai/pkg/kit/validate"
+	"dreampicai/types"
+	"dreampicai/view/generate"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/replicate/replicate-go"
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/pkg/kit/validate"
-	"github.com/ryanzola/dreampicai/types"
-	"github.com/ryanzola/dreampicai/view/generate"
 	"github.com/uptrace/bun"
 )
 

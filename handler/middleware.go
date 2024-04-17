@@ -8,11 +8,12 @@ import (
 	"os"
 	"strings"
 
+	"dreampicai/db"
+	"dreampicai/pkg/sb"
+	"dreampicai/types"
+
 	"github.com/google/uuid"
 	"github.com/gorilla/sessions"
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/pkg/sb"
-	"github.com/ryanzola/dreampicai/types"
 )
 
 func WithAuth(next http.Handler) http.Handler {

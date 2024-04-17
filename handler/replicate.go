@@ -7,10 +7,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"dreampicai/db"
+	"dreampicai/types"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/types"
 	"github.com/uptrace/bun"
 )
 

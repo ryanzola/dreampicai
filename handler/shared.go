@@ -4,8 +4,9 @@ import (
 	"log/slog"
 	"net/http"
 
+	"dreampicai/types"
+
 	"github.com/a-h/templ"
-	"github.com/ryanzola/dreampicai/types"
 )
 
 func render(r *http.Request, w http.ResponseWriter, component templ.Component) error {

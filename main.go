@@ -7,11 +7,12 @@ import (
 	"net/http"
 	"os"
 
+	"dreampicai/db"
+	"dreampicai/handler"
+	"dreampicai/pkg/sb"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/joho/godotenv"
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/handler"
-	"github.com/ryanzola/dreampicai/pkg/sb"
 )
 
 //go:embed public

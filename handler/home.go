@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ryanzola/dreampicai/view/home"
+	"dreampicai/view/home"
 )
 
 func HandleLongProcess(w http.ResponseWriter, r *http.Request) error {

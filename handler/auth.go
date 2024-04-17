@@ -5,14 +5,15 @@ import (
 	"net/http"
 	"os"
 
+	"dreampicai/db"
+	"dreampicai/pkg/kit/validate"
+	"dreampicai/pkg/sb"
+	"dreampicai/pkg/util"
+	"dreampicai/types"
+	"dreampicai/view/auth"
+
 	"github.com/gorilla/sessions"
 	"github.com/nedpals/supabase-go"
-	"github.com/ryanzola/dreampicai/db"
-	"github.com/ryanzola/dreampicai/pkg/kit/validate"
-	"github.com/ryanzola/dreampicai/pkg/sb"
-	"github.com/ryanzola/dreampicai/pkg/util"
-	"github.com/ryanzola/dreampicai/types"
-	"github.com/ryanzola/dreampicai/view/auth"
 )
 
 const (
