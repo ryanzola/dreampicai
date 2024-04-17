@@ -18,7 +18,7 @@ templ:
 
 build:
 	@templ generate view
-	@CGO_ENABLED=0 go build -tags prod -o /app/dreampicai
+	@CGO_ENABLED=0 go build -tags prod -o /dreampicai
 
 up: ## Database migration up
 	@go run cmd/migrate/main.go up
