@@ -1,21 +1,20 @@
 FROM golang:1.22-alpine as builder
 
 WORKDIR /app
-RUN apk add --no-cache make nodejs npm
-ENV GO111MODULE=on
+RUN apk add --no-cache make nodejs npm git
 
-COPY go.mod .
-COPY go.sum .
-RUN go mod download
-
-COPY . ./
+COPY go.mod go.sum Makefile ./
 RUN make install
+COPY . /app
 RUN make build
 RUN > /app/.env
 
-FROM scratch
-COPY --from=builder /app/bin/dreampicai /dreampicai
+FROM gcr.io/distroless/static-debian11 AS release-stage
+WORKDIR /
+COPY --from=builder /dreampicai /dreampicai
 COPY --from=builder /app/.env .env
 
+
 EXPOSE 3000
+USER nonroot:nonroot
 ENTRYPOINT [ "./dreampicai" ]
