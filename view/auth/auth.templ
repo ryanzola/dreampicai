@@ -44,7 +44,7 @@ templ Login() {
 	@layout.App(false) {
 		<div class="flex justify-center mt-[calc(8rem)]">
 			<div class="max-w-md w-full bg-base-300 py-10 px-10 rounded-xl">
-				<h1 class="text-center text-xl font-black mb-12">Login to dreampicai</h1>
+				<h1 class="text-center text-xl font-black mb-12">Login to dreampicrz</h1>
 				@LoginForm(supabase.UserCredentials{}, LoginErrors{})
 			</div>
 		</div>
@@ -77,85 +77,6 @@ templ LoginForm(creds supabase.UserCredentials, errors LoginErrors) {
 		<div class="divider">OR</div>
 		<a href="/login/provider/google" class="btn btn-outline w-full">Login with Google <i class="fa-brands fa-google"></i></a>
 	</form>
-}
-
-templ Signup() {
-	@layout.App(false) {
-		<div class="flex justify-center mt-[calc(8rem)]">
-			<div class="max-w-md w-full bg-base-300 py-10 px-10 rounded-xl">
-				<h1 class="text-center text-xl font-black mb-12">Signup to dreampicai</h1>
-				@SignupForm(SignupParams{}, SignupErrors{})
-			</div>
-		</div>
-	}
-}
-
-type SignupParams struct {
-	Email           string
-	Password        string
-	ConfirmPassword string
-}
-
-type SignupErrors struct {
-	Email              string
-	Password           string
-	ConfirmPassword    string
-	InvalidCredentials string
-}
-
-templ SignupForm(params SignupParams, errors SignupErrors) {
-	<form
-		hx-post="/signup"
-		hx-swap="outerHTML"
-		class="space-y-8"
-	>
-		<label class="form-control w-full">
-			<div class="label" for="email">
-				<span class="label-text">Email</span>
-			</div>
-			<input id="email" name="email" type="text" value={ params.Email } class="input input-bordered w-full" autocomplete="off"/>
-			if len(errors.Email) > 0 {
-				<div class="label">
-					<span class="label-text-alt text-error">{ errors.Email }</span>
-				</div>
-			}
-		</label>
-		<label class="form-control w-full">
-			<div class="label" for="password">
-				<span class="label-text">Password</span>
-			</div>
-			<input id="password" name="password" type="password" value={ params.Password } class="input input-bordered w-full" autocomplete="off"/>
-			if len(errors.Password) > 0 {
-				<div class="label">
-					<span class="label-text-alt text-error">{ errors.Password }</span>
-				</div>
-			}
-		</label>
-		<label class="form-control w-full">
-			<div class="label" for="confirmPassword">
-				<span class="label-text">Confirm Password</span>
-			</div>
-			<input id="confirmPassword" name="confirmPassword" type="password" value={ params.ConfirmPassword } class="input input-bordered w-full" autocomplete="off"/>
-			if len(errors.ConfirmPassword) > 0 {
-				<div class="label">
-					<span class="label-text-alt text-error">{ errors.ConfirmPassword }</span>
-				</div>
-			}
-		</label>
-		if len(errors.InvalidCredentials) > 0 {
-			<div class="text-sm text-center text-error">
-				{ errors.InvalidCredentials }
-			</div>
-		}
-		<button type="submit" class="btn btn-primary w-full">Signup <i class="fa-solid fa-arrow-right"></i></button>
-		<a href="/login" class="text-center block text-sm text-primary">Already have an account? Login</a>
-	</form>
-}
-
-templ SignupSuccess(email string) {
-	@layout.App(false) {
-		<div>A confirmation email has been sent to <span class="font-semibold text-success">{ email }</span></div>
-	}
 }
 
 templ MagicLinkSuccess(email string) {
