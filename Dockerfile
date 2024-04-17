@@ -12,5 +12,5 @@ FROM scratch
 COPY --from=builder /dreampic /dreampic
 COPY --from=builder /app/.env .env
 
-EXPOSE 3000
+EXPOSE 3001
 ENTRYPOINT [ "./dreampic" ]
