@@ -1,3 +1,0 @@
-<dialog id=\"credits_modal\" class=\"modal modal-bottom sm:modal-middle\"><div class=\"modal-box\"><h3 class=\"font-bold text-lg\">Buy credits</h3><p class=\"py-4\">Buy more credits to keep using this feature</p><p class=\"py-4\">You have 
- but need 
-</p><div class=\"modal-action flex justify-end\"><a href=\"/buy-credits\" class=\"btn btn-primary\">Buy Credits</a><form method=\"dialog\"><button class=\"btn\">Close</button></form></div></div></dialog><script>\n    document.getElementById('credits_modal').showModal()\n  </script>
