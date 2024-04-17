@@ -29,6 +29,7 @@ type ReplicateResp struct {
 }
 
 func HandleReplicateCallback(w http.ResponseWriter, r *http.Request) error {
+	fmt.Println("replicate callback my dude-------------------")
 	var resp ReplicateResp
 	if err := json.NewDecoder(r.Body).Decode(&resp); err != nil {
 		return err
