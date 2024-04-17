@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"log/slog"
 	"net/http"
 	"os"
 	"strconv"
@@ -122,7 +121,7 @@ func HandleGenerateImageStatus(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	slog.Info("Checking image status", "id", id)
+	// slog.Info("Checking image status", "id", id)
 
 	return render(r, w, generate.GalleryImage(image))
 }
@@ -153,6 +152,8 @@ func generateImages(ctx context.Context, params GenerateImageParams) error {
 
 	baseURL := os.Getenv("REPLICATE_CALLBACK_URL")
 	URL := fmt.Sprintf("%s/%s/%s", baseURL, params.UserID, params.BatchID)
+
+	fmt.Println("URL", URL)
 
 	webhook := replicate.Webhook{
 		URL:    URL,
