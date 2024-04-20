@@ -24,4 +24,8 @@ steps:
 images:
   - 'gcr.io/$PROJECT_ID/dreampicai:$SHORT_SHA'
 
+options:
+  logging: LEGACY
+logsBucket: 'gs://dreampicai-logs'
+
 timeout: '1600s'  # Increase timeout if your build process is long
