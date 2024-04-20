@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
@@ -55,10 +56,13 @@ func HandleLoginIndex(w http.ResponseWriter, r *http.Request) error {
 }
 
 func HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
+	baseURL := os.Getenv("HOST_URL")
+	redirectURL := fmt.Sprintf("%s/auth/callback", baseURL)
+
 	resp, err := sb.Client.Auth.SignInWithProvider(supabase.ProviderSignInOptions{
 		Provider: "google",
 		// RedirectTo: "http://localhost:7331/auth/callback",
-		RedirectTo: "https://dreampicai-zkd2aag6vq-ue.a.run.app/auth/callback",
+		RedirectTo: redirectURL,
 	})
 	if err != nil {
 		return err
