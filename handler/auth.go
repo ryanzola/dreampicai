@@ -62,6 +62,7 @@ func HandleLoginWithGoogle(w http.ResponseWriter, r *http.Request) error {
 	resp, err := sb.Client.Auth.SignInWithProvider(supabase.ProviderSignInOptions{
 		Provider: "google",
 		// RedirectTo: "http://localhost:7331/auth/callback",
+		// RedirectTo: "https://dreampicai-zkd2aag6vq-ue.a.run.app/auth/callback",
 		RedirectTo: redirectURL,
 	})
 	if err != nil {

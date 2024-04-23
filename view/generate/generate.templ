@@ -17,8 +17,8 @@ type ViewData struct {
 
 templ Index(data ViewData) {
   @layout.App(true) {
-    <div class="w-full h-[calc(100vh-69px)] flex">
-      <div class="w-[400px] border-r border-gray-700 p-4">
+    <div class="w-full h-[calc(100vh-69px)] flex flex-col md:flex-row">
+      <div class="w-full max-w-[400px] border-b md:border-b-0 md:border-r border-gray-700 p-4">
         @Form(data.FormParams, data.FormErrors)
       </div>
       <div class="flex-1 bg-base-300">
@@ -53,8 +53,7 @@ templ Form(params FormParams, errors FormErrors) {
         </div>
 
         <textarea 
-          class="textarea textarea-bordered h-24" 
-          placeholder="A woman in a white dress"
+          class="textarea textarea-bordered h-24 resize-none"
           name="prompt"
         >
           { params.Prompt }
@@ -112,7 +111,7 @@ templ Gallery(images []types.Image) {
 
 templ GalleryImage(image types.Image) {
   if image.Status == types.ImageStatusCompleted {
-    <div class="bg-green-100 aspect-square rounded-xl">
+    <div class="bg-green-100 aspect-square rounded">
       <img src={ image.ImageLocation } class="h-full w-full object-cover rounded-xl cursor-pointer" />
     </div>
   } else if image.Status == types.ImageStatusFailed {

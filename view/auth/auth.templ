@@ -42,7 +42,7 @@ templ AccountSetupForm(params AccountSetupParams, errors AccountSetupErrors) {
 
 templ Login() {
 	@layout.App(false) {
-		<div class="flex justify-center mt-[calc(8rem)]">
+		<div class="px-4 py-20 flex justify-center items-center">
 			<div class="max-w-md w-full bg-base-300 py-10 px-10 rounded-xl">
 				<h1 class="text-center text-xl font-black mb-12">Login to dreampicrz</h1>
 				@LoginForm(supabase.UserCredentials{}, LoginErrors{})

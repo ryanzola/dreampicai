@@ -1,7 +1,6 @@
 package home
 
 import "dreampicai/view/layout"
-import "dreampicai/view"
 
 templ Index() {
 	@layout.App(true) {
@@ -15,6 +14,6 @@ templ Index() {
 	}
 }
 
-templ UserLikes(amount int) {
-	<div>{view.String(amount)} user likes</div>
+templ UserLikes() {
+	<i class="fa-solid fa-heart"></i>
 }
